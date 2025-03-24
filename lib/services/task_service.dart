@@ -11,6 +11,10 @@ class TaskService {
     tasks[index].isFinished = true;
   }
 
+  static void updateTask(int index, Task task) {
+    tasks[index] = task;
+  }
+
   static void deleteTask(int index) {
     tasks.removeAt(index);
   }

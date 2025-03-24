@@ -30,6 +30,12 @@ class _HomePageState extends State<HomePage> {
                   TaskService.finishTask(index);
                 });
               },
+              update: () {
+                Navigator.pushNamed(context, '/update', arguments: {
+                  'task': TaskService.tasks[index],
+                  'index': index,
+                }).then((_) => setState(() {}));
+              },
               delete: () {
                 setState(() {
                   TaskService.deleteTask(index);

@@ -8,12 +8,14 @@ class TaskCard extends StatelessWidget {
     required this.task,
     required this.index,
     required this.finish,
+    required this.update,
     required this.delete,
   });
 
   final Task task;
   final int index;
   final Function finish;
+  final Function update;
   final Function delete;
 
   @override
@@ -47,6 +49,7 @@ class TaskCard extends StatelessWidget {
                   onPressed: () => finish(),
                   color: Colors.green,
                 ),
+              IconButton(icon: const Icon(Icons.edit), onPressed: () => update()),
               IconButton(icon: const Icon(Icons.delete), onPressed: () => delete()),
             ],
           ),
