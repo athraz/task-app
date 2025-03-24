@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:taskapp/widgets/task_card.dart';
-import 'package:taskapp/models/task.dart';
 import 'package:taskapp/services/task_service.dart';
 
 class HomePage extends StatefulWidget {
