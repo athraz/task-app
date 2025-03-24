@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskapp/screens/create_task_page.dart';
 import 'package:taskapp/screens/home_page.dart';
 
 void main() {
@@ -14,6 +15,7 @@ class TaskApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomePage(),
+        '/create': (context) => CreateTaskPage(),
       },
     );
   }

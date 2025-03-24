@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Awesome Quotes'),
+        title: Text('Task Manager'),
         centerTitle: true,
         backgroundColor: Colors.amberAccent,
       ),
@@ -39,17 +39,8 @@ class _HomePageState extends State<HomePage> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            TaskService.createTask(
-                Task(
-                    title: 'task baru',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                    deadline: DateTime.now().add(Duration(hours: 12)),
-                )
-            );
-          });
-        },
+        onPressed: () => Navigator.pushNamed(context, '/create')
+          .then((_) => setState(() {})),
         child: Icon(Icons.add),
       ),
     );
