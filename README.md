@@ -5,8 +5,12 @@
 |---------------------------|---------------|
 |Muhammad Razan Athallah    |5025211008     |
 
+$~$
+
 ## Introduction
 Hive adalah database NoSQL lokal yang mampu menyimpan berbagai jenis data, mulai dari tipe sederhana seperti string dan integer hingga objek kompleks. Dengan model penyimpanan key-value, Hive tidak memerlukan proses konversi data yang rumit dan tetap mampu memberikan performa akses yang cepat. Selain itu, Hive juga mudah diintegrasikan dengan Flutter melalui package `hive_flutter`, yang mempermudah proses inisialisasi dan penggunaannya di dalam aplikasi mobile.
+
+$~$
 
 ## Usage
 Untuk menggunakan Hive, tambahkan dependensi berikut pada file `pubspec.yaml`:
@@ -51,8 +55,10 @@ tasks.clear();
 ```
 ![Image](https://github.com/user-attachments/assets/5d78a9e1-376b-48d2-9689-4a5da3709fb0)
 
-## Hive with Custom Class
+$~$
 
+## Hive with Custom Class
+Selain menyimpan data bertipe sederhana, Hive juga dapat digunakan untuk menyimpan objek dengan struktur kompleks melalui custom class. Untuk dapat menyimpan custom class ke dalam Hive, objek tersebut perlu dikonversi terlebih dahulu menjadi tipe data yang dapat dikenali Hive, seperti `Map<String, dynamic>`. Konversi ini dilakukan dengan membuat method `toMap()` pada class untuk menyimpan data, dan `fromMap()` sebagai factory constructor untuk membaca kembali data dari Hive menjadi objek asli.
 ```dart
 class Task {
   String title;
@@ -87,19 +93,27 @@ class Task {
 }
 ```
 
+Berikut operasi CRUD yang dapat dilakukan dengan custom class Task:
 ```dart
 static Box get tasks => Hive.box('tasks');
-```
 
-```dart
 static List<Task> getTasks() {
   return tasks.values
-    .map((e) => Task.fromMap(Map<String, dynamic>.from(e)))
-    .toList();
+      .map((e) => Task.fromMap(Map<String, dynamic>.from(e)))
+      .toList();
 }
 
 static void createTask(Task task) {
   tasks.add(task.toMap());
+}
+
+static void finishTask(int key) {
+  final taskMap = tasks.get(key);
+  if (taskMap != null) {
+    Task updated = Task.fromMap(Map<String, dynamic>.from(taskMap));
+    updated.isFinished = true;
+    tasks.put(key, updated.toMap());
+  }
 }
 
 static void updateTask(int key, Task task) {
@@ -110,3 +124,5 @@ static void deleteTask(int key) {
   tasks.delete(key);
 }
 ```
+
+$~$
