@@ -126,3 +126,7 @@ static void deleteTask(int key) {
 ```
 
 $~$
+
+## References
+- https://github.com/isar/hive
+- https://github.com/o-ifeanyi/db_benchmarks
