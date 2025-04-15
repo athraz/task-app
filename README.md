@@ -46,14 +46,15 @@ Untuk mengambil data dari box, dapat digunakan method `get(key)` untuk mengambil
 print(tasks.get(1));
 print(tasks.values.toList());
 ```
-![Image](https://github.com/user-attachments/assets/dcade23b-33e7-4bf7-9bde-851df5b46225)
+![Image](https://github.com/user-attachments/assets/01d050f2-4f74-462b-9a31-bceed255da93)
+
 
 Untuk menghapus data di dalam box, kita bisa menggunakan dua method, yaitu `delete(key)` untuk menghapus data dengan key tertentu, dan `clear()` untuk menghapus semua data di dalam box.
 ```dart
 tasks.delete(1);
 tasks.clear();
 ```
-![Image](https://github.com/user-attachments/assets/5d78a9e1-376b-48d2-9689-4a5da3709fb0)
+![Image](https://github.com/user-attachments/assets/1489e314-7c7a-4c80-b3d8-4323d0492a0d)
 
 $~$
 
