@@ -1,7 +1,5 @@
-# PPB Assignment 1
+# PPB Assignment 3: Firebase and Awesome Notifications
 
 | Nama                      | NRP           |
 |---------------------------|---------------|
 |Muhammad Razan Athallah    |5025211008     |
-
-Demo: https://youtu.be/MStlekp0450
