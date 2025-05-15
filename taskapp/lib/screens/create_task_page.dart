@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:taskapp/models/task.dart';
+import 'package:taskapp/services/notification_service.dart';
 import 'package:taskapp/services/task_service.dart';
 
 class CreateTaskPage extends StatefulWidget {
@@ -47,25 +48,54 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
     });
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
       final currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser == null) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('You must be logged in to add a task.')),
         );
         return;
       }
 
-      taskService.addTask(Task(
-        title: _titleController.text,
-        description: _descriptionController.text,
-        deadline: _selectedDateTime ?? DateTime.now().add(Duration(days: 1)),
-        userId: currentUser.uid,
-      ));
+      try {
+        Task newTask = Task(
+          title: _titleController.text.trim(),
+          description: _descriptionController.text.trim(),
+          deadline: _selectedDateTime ?? DateTime.now().add(Duration(days: 1)),
+          userId: currentUser.uid,
+        );
+
+        final String taskId = await taskService.addTask(newTask);
+        final int notifId = taskId.hashCode;
+
+        await NotificationService.createNotification(
+          id: notifId,
+          title: 'Task Created',
+          body: 'Task "${_titleController.text}" successfully created',
+        );
+
+        final DateTime reminderTime = newTask.deadline.subtract(Duration(minutes: 15));
+
+        await NotificationService.createNotification(
+          id: notifId + 1000,
+          title: 'Task Reminder',
+          body: '15 minutes before task "${_titleController.text}" deadline!!!',
+          scheduled: true,
+          scheduleTime: reminderTime,
+        );
+
+        if (!mounted) return;
+        Navigator.pop(context);
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add task: $e')),
+        );
+      }
     }
-    Navigator.pop(context);
   }
 
   @override

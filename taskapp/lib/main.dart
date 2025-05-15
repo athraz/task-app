@@ -7,12 +7,14 @@ import 'package:taskapp/screens/home_page.dart';
 import 'package:taskapp/screens/login_page.dart';
 import 'package:taskapp/screens/register_page.dart';
 import 'package:taskapp/screens/update_task_page.dart';
+import 'package:taskapp/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await NotificationService.initializeNotification();
   runApp(const TaskApp());
 }
 

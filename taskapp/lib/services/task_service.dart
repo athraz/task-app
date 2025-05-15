@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:taskapp/models/task.dart';
+import 'package:taskapp/services/notification_service.dart';
 
 class TaskService {
   final CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
 
-  Future<void> addTask(Task task) {
-    return tasks.add({
+  Future<String> addTask(Task task) async {
+    DocumentReference docRef = await tasks.add({
       'title': task.title,
       'description': task.description,
       'deadline': task.deadline,
@@ -15,6 +16,8 @@ class TaskService {
       'createdAt': Timestamp.now(),
       'updatedAt': Timestamp.now(),
     });
+
+    return docRef.id;
   }
 
   Stream<QuerySnapshot> getTasksStream() {
@@ -28,24 +31,42 @@ class TaskService {
     return taskStream;
   }
 
-  Future<void> updateTask(String taskId, Task task) {
+  Future<void> updateTask(String taskId, Task task) async {
+    final int notifId = taskId.hashCode;
+    await NotificationService.cancelNotification(notifId + 1000);
+
+    final DateTime reminderTime = task.deadline.subtract(Duration(minutes: 15));
+
+    await NotificationService.createNotification(
+      id: notifId + 1000,
+      title: 'Task Reminder',
+      body: '15 minutes before task "${task.title}" deadline!!!',
+      scheduled: true,
+      scheduleTime: reminderTime,
+    );
+
     return tasks.doc(taskId).update({
       'title': task.title,
       'description': task.description,
       'deadline': task.deadline,
-      'isFinished': task.isFinished,
       'updatedAt': Timestamp.now(),
     });
   }
 
-  Future<void> finishTask(String taskId) {
+  Future<void> finishTask(String taskId) async {
+    final int notifId = taskId.hashCode;
+    await NotificationService.cancelNotification(notifId + 1000);
+
     return tasks.doc(taskId).update({
       'isFinished': true,
       'updatedAt': Timestamp.now(),
     });
   }
 
-  Future<void> deleteTask(String taskId) {
+  Future<void> deleteTask(String taskId) async {
+    final int notifId = taskId.hashCode;
+    await NotificationService.cancelNotification(notifId + 1000);
+
     return tasks.doc(taskId).delete();
   }
 }
