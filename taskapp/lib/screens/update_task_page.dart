@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:taskapp/models/task.dart';
@@ -59,10 +60,20 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('You must be logged in to add a task.')),
+        );
+        return;
+      }
+      
       taskService.updateTask(widget.index, Task(
         title: _titleController.text,
         description: _descriptionController.text,
         deadline: _selectedDateTime ?? DateTime.now().add(Duration(days: 1)),
+        userId: currentUser.uid,
       ));
 
       Navigator.pop(context);

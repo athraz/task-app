@@ -19,86 +19,77 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Task Manager'),
-        centerTitle: true,
         backgroundColor: Colors.amberAccent,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              Navigator.pushNamed(context, 'account');
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: taskService.getTasksStream(), 
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List taskList = snapshot.data!.docs;
-
-            return ListView.builder(
-              itemCount: taskList.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot document = taskList[index];
-                String taskId = document.id;
-
-                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-                Task task = Task(
-                  id: taskId,
-                  title: data['title'],
-                  description: data['description'],
-                  deadline: (data['deadline'] as Timestamp).toDate(),
-                  isFinished: data['is_finished'],
-                );
-
-                return TaskCard(
-                  task: task,
-                  index: index.toString(),
-                  finish: () {
-                    setState(() {
-                      taskService.finishTask(taskId);
-                    });
-                  },
-                  update: () {
-                    Navigator.pushNamed(context, '/update', arguments: {
-                      'task': task,
-                      'index': taskId,
-                    }).then((_) => setState(() {}));
-                  },
-                  delete: () {
-                    setState(() {
-                      taskService.deleteTask(taskId);
-                    });
-                  }
-                );
-              }
-            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
           }
-          else {
-            return Text("No task");
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text("No task"));
+          }
+
+          List taskList = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: taskList.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = taskList[index];
+              String taskId = document.id;
+
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+              Task task = Task(
+                id: taskId,
+                title: data['title'],
+                description: data['description'],
+                deadline: (data['deadline'] as Timestamp).toDate(),
+                isFinished: data['isFinished'],
+                userId: data['userId'],
+              );
+
+              return TaskCard(
+                task: task,
+                index: index.toString(),
+                finish: () {
+                  setState(() {
+                    taskService.finishTask(taskId);
+                  });
+                },
+                update: () {
+                  Navigator.pushNamed(context, 'update', arguments: {
+                    'task': task,
+                    'index': taskId,
+                  }).then((_) => setState(() {}));
+                },
+                delete: () {
+                  setState(() {
+                    taskService.deleteTask(taskId);
+                  });
+                }
+              );
+            }
+          );
         }
       ),
-      // body: ListView.builder(
-      //   itemCount: TaskService.tasks.length,
-      //   itemBuilder: (BuildContext context, int index) {
-      //     return TaskCard(
-      //         task: TaskService.tasks[index],
-      //         index: index,
-      //         finish: () {
-      //           setState(() {
-      //             TaskService.finishTask(index);
-      //           });
-      //         },
-      //         update: () {
-      //           Navigator.pushNamed(context, '/update', arguments: {
-      //             'task': TaskService.tasks[index],
-      //             'index': index,
-      //           }).then((_) => setState(() {}));
-      //         },
-      //         delete: () {
-      //           setState(() {
-      //             TaskService.deleteTask(index);
-      //           });
-      //         }
-      //     );
-      //   }
-      // ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/create')
+        onPressed: () => Navigator.pushNamed(context, 'create')
           .then((_) => setState(() {})),
         child: Icon(Icons.add),
       ),

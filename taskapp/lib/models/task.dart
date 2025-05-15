@@ -4,6 +4,7 @@ class Task {
   final String description;
   final DateTime deadline;
   final bool isFinished;
+  final String userId;
 
   Task({
     this.id,
@@ -11,5 +12,6 @@ class Task {
     required this.description,
     required this.deadline,
     this.isFinished = false,
+    required this.userId,
   });
 }
