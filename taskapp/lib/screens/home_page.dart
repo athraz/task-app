@@ -14,6 +14,26 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TaskService taskService = TaskService();
 
+  Future<bool> showDeleteConfirmationDialog(BuildContext context) async {
+    return (await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Delete'),
+        content: Text('Are you sure you want to delete this task?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // Cancel
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true), // Confirm
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    )) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,10 +98,13 @@ class _HomePageState extends State<HomePage> {
                     'index': taskId,
                   }).then((_) => setState(() {}));
                 },
-                delete: () {
-                  setState(() {
-                    taskService.deleteTask(taskId);
-                  });
+                delete: () async {
+                  bool confirmed = await showDeleteConfirmationDialog(context);
+                  if (confirmed) {
+                    setState(() {
+                      taskService.deleteTask(taskId);
+                    });
+                  }
                 }
               );
             }
