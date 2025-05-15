@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:taskapp/firebase_options.dart';
 import 'package:taskapp/screens/create_task_page.dart';
 import 'package:taskapp/screens/home_page.dart';
 import 'package:taskapp/screens/update_task_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const TaskApp());
 }
 

@@ -13,7 +13,7 @@ class TaskCard extends StatelessWidget {
   });
 
   final Task task;
-  final int index;
+  final String index;
   final Function finish;
   final Function update;
   final Function delete;

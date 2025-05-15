@@ -11,6 +11,7 @@ class CreateTaskPage extends StatefulWidget {
 }
 
 class _CreateTaskPageState extends State<CreateTaskPage> {
+  final TaskService taskService = TaskService();
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -47,7 +48,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      TaskService.createTask(Task(
+      taskService.addTask(Task(
         title: _titleController.text,
         description: _descriptionController.text,
         deadline: _selectedDateTime ?? DateTime.now().add(Duration(days: 1)),

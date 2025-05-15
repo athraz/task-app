@@ -5,7 +5,7 @@ import 'package:taskapp/services/task_service.dart';
 
 class UpdateTaskPage extends StatefulWidget {
   final Task task;
-  final int index;
+  final String index;
 
   const UpdateTaskPage({super.key, required this.task, required this.index});
 
@@ -14,6 +14,7 @@ class UpdateTaskPage extends StatefulWidget {
 }
 
 class _UpdateTaskPageState extends State<UpdateTaskPage> {
+  final TaskService taskService = TaskService();
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
@@ -58,7 +59,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      TaskService.updateTask(widget.index, Task(
+      taskService.updateTask(widget.index, Task(
         title: _titleController.text,
         description: _descriptionController.text,
         deadline: _selectedDateTime ?? DateTime.now().add(Duration(days: 1)),
